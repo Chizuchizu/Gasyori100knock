@@ -18,7 +18,7 @@ def normal22(x, s, m, s0, m0):
     return s0 / (s*(x-m)) + m0
 
 
-img2 = np.zeros((132, 132, 3))
+img2 = np.zeros((130, 130, 3))
 c = np.min(img2)
 d = np.max(img2)
 tmp = np.zeros_like(img2)
@@ -43,15 +43,15 @@ def zscore(x, axis = None):
     zscore = (x-xmean)/xstd
     return (x-np.min(x)) / (np.max(x) - np.min(x))
 
-# パディング
-for i in range(128):
-    for j in range(128):
-        for k in range(3):
-            img2[i+1, j+1, k] = img[i, j, k]
+# # パディング
+# for i in range(128):
+#     for j in range(128):
+#         for k in range(3):
+#             img2[i+1, j+1, k] = img[i, j, k]
 
 
-x = y = int(128*1.5)
-out = np.zeros((x, y, 3))
+# out = np.zeros((128, 128, 3))
+img2 = img.copy()
 
 
 def h(t):
@@ -63,35 +63,35 @@ def h(t):
         return -abs(t)**3 - (-5*abs(t)**2) + -8*abs(t) + 4
 
 
-for i in range(192):  # 128x1.5
-    for j in range(192):
+x_prime = int(128 * 1.3)
+y_prime = int(128 * 0.8)
+out = np.zeros((y_prime, x_prime, 3))
+
+
+tx = -30
+ty = 30
+
+for i in range(128):  # 128x1.5
+    for j in range(128):
         for k in range(3):
-            x_prime = int(np.floor(i/1.5))
-            y_prime = int(np.floor(j/1.5))
+            x = i
+            y = j
+            K = np.array([[1.3, 0, tx],
+                          [0, 0.8, ty],
+                          [0, 0, 1]])
+            o = np.array([[x],
+                          [y],
+                          [1]])
+            k_o = np.dot(K, o)
+            x_prime = int(k_o[0])
+            y_prime = int(k_o[1])
+            print(x_prime, y_prime)
 
-            dx1 = i / 1.5 - (x_prime-1)
-            dx2 = i / 1.5 - x_prime
-            dx3 = (x_prime+1) - i / 1.5
-            dx4 = (x_prime+2) - i / 1.5
-            dy1 = j / 1.5 - (y_prime - 1)
-            dy2 = j/1.5 - y_prime
-            dy3 = (y_prime+1) - j/1.5
-            dy4 = (y_prime+2) - j/1.5
-
-            wxi = [h(dx1), h(dx2), h(dx3), h(dx4)]
-            wyi = [h(dy1), h(dy2), h(dy3), h(dy4)]
-            print(wxi)
-            o = 0
-            o1 = 0
-            for a in range(-1, 3):
-                for b in range(-1, 3):
-                    o += img2[x_prime+a+1, y_prime+b+1, k] * wxi[a+1] * wyi[b+1]
-                    o1 += wxi[a+1] * wyi[b+1]
-            print(o, o1)
-            if o == 0.0 and o1 == 0.0:
-                out[i, j, k] = 255
+            if x_prime < 0 or y_prime < 0 or x_prime >= 98 or y_prime >= 158:
+                break
             else:
-                out[i, j, k] = int(o / o1)
+                print(x_prime, y_prime)
+                out[x_prime, y_prime, k] = img2[i, j, k]
 
 
 # for i in range(128):
