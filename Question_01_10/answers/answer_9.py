@@ -11,14 +11,15 @@ K_size = 3
 sigma = 1.3
 
 ## Zero padding
-pad = K_size // 2
+pad = 1  # K_size // 2
 out = np.zeros((H + pad*2, W + pad*2, C), dtype=np.float)
 out[pad:pad+H, pad:pad+W] = img.copy().astype(np.float)
 
 ## Kernel
+# 3x3のゼロ行列
 K = np.zeros((K_size, K_size), dtype=np.float)
 for x in range(-pad, -pad+K_size):
-    
+    """-1, 2"""
     for y in range(-pad, -pad+K_size):
         K[y+pad, x+pad] = np.exp( -(x**2 + y**2) / (2* (sigma**2)))
 K /= (sigma * np.sqrt(2 * np.pi))

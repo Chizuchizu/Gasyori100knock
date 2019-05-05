@@ -51,7 +51,7 @@ for i in range(128):
 
 
 x = y = int(128*1.5)
-out = np.zeros((x, y, 3)).astype(np.uint8)
+out = np.zeros((x, y, 3))
 
 
 def h(t):
@@ -63,8 +63,8 @@ def h(t):
         return -abs(t)**3 - (-5*abs(t)**2) + -8*abs(t) + 4
 
 
-for i in range(x):
-    for j in range(x):
+for i in range(192):  # 128x1.5
+    for j in range(192):
         for k in range(3):
             x_prime = int(np.floor(i/1.5))
             y_prime = int(np.floor(j/1.5))
@@ -89,7 +89,7 @@ for i in range(x):
                     o1 += wxi[a+1] * wyi[b+1]
             print(o, o1)
             if o == 0.0 and o1 == 0.0:
-                out[i, j, k] = 0
+                out[i, j, k] = 255
             else:
                 out[i, j, k] = int(o / o1)
 
@@ -106,7 +106,7 @@ for i in range(x):
 # plt.hist(img.ravel(), bins=255, rwidth=0.8, range=(0, 255))
 # plt.show()
 out = np.where(out < 0, 0, out)
-out[255 < out] = 255
+out[out > 255] = 255
 out = out.astype(np.uint8)
 # Save result
 cv2.imshow("result", out)
